@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import RandomNumber from './RandomNumber';
+import shuffle from 'lodash.shuffle';
 
 type Props = {};
 export default class Game extends Component<Props> {
@@ -21,6 +22,8 @@ export default class Game extends Component<Props> {
       .slice(0, this.props.randomNumberCount - 2)
       .reduce((acc, curr) => acc + curr, 0);
       //TODO: Shuffle the random numbers
+    shuffledrandomNumbers = shuffle(this.randomNumbers);
+    
     componentDidMount() {
       //Erik - 5/1/2018 setInterval is async timer
       //Erik - 5/1/2018 The second function takes is a '.then()' that takes a conditional
@@ -71,7 +74,7 @@ export default class Game extends Component<Props> {
   // gameStatus: PLAYING, WON, LOST
   calcGameStatus = (nextState) => {
     const sumSelected = nextState.selectedIds.reduce((acc, curr) => {
-      return acc + this.randomNumbers[curr];
+      return acc + this.shuffledrandomNumbers[curr];
     },0);
     //Erik - 5/1/2018 Shows on device
     // console.warn('Current Sum: '+sumSelected);
@@ -117,7 +120,7 @@ export default class Game extends Component<Props> {
           {this.target}
         </Text>
         <View style={styles.randomContainer}>
-          {this.randomNumbers.map((randomNumber, index) =>
+          {this.shuffledrandomNumbers.map((randomNumber, index) =>
             <RandomNumber 
               key={index}
               id={index}
