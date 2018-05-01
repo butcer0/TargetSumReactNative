@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Button, Text } from 'react-native';
 import PropTypes from 'prop-types';
 import RandomNumber from './RandomNumber';
 import shuffle from 'lodash.shuffle';
@@ -9,6 +9,7 @@ export default class Game extends Component<Props> {
   static propTypes = {
     randomNumberCount: PropTypes.number.isRequired,
     initialSeconds: PropTypes.number.isRequired,
+    onPlayAgain: PropTypes.func.isRequired,
   };
   state = {
     selectedIds: [],
@@ -89,7 +90,7 @@ export default class Game extends Component<Props> {
     if(sumSelected == this.target) {
       return 'WON';
     }
-  }  
+  };
 
   //Erik - 5/1/2018 This would have calculated previous state when using componentWillUpdate
   // calcGameStatus = () => {
@@ -110,7 +111,13 @@ export default class Game extends Component<Props> {
   //     return 'WON';
   //   }
   // }
-    
+  handlePlayAgainPressed = () => {
+    if(this.gameStatus !== 'PLAYING')
+    {
+      this.props.onPlayAgain();
+    }
+  }; 
+
   render() {
     // const gameStatus = this.gameStatus;
     return (
@@ -130,6 +137,16 @@ export default class Game extends Component<Props> {
             />
           )}
         </View>
+        { //Erik - 5/1/2018 Only when gameStatus PLAYING then introduce the button
+          this.gameStatus !== 'PLAYING' && (
+            <Button title="Play Again" 
+              onPress={this.handlePlayAgainPressed}
+            />
+          )}
+        
+        {/* <Button title="Play Again" 
+          onPress={this.handlePlayAgainPressed}
+          disabled = {this.gameStatus === 'PLAYING'} /> */}
         <Text>{this.gameStatus}</Text>
         <Text>{this.state.remainingSeconds}</Text>
       </View>

@@ -9,9 +9,20 @@ import Game from './Game';
 
 type Props = {};
 export default class App extends Component<Props> {
+  state = {
+    gameId: 1,
+  };
+  resetGame = () => {
+    this.setState((prevState) => ({
+      gameId: prevState.gameId + 1
+    }));
+  };
   render() {
     return (
-      <Game randomNumberCount={6} initialSeconds={10}/>
+      <Game key={this.state.gameId} 
+        randomNumberCount={6} 
+        initialSeconds={10} 
+        onPlayAgain={this.resetGame}/>
     );
   }
 }
