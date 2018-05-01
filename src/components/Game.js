@@ -7,9 +7,11 @@ type Props = {};
 export default class Game extends Component<Props> {
   static propTypes = {
     randomNumberCount: PropTypes.number.isRequired,
+    initialSeconds: PropTypes.number.isRequired,
   };
   state = {
     selectedIds: [],
+    remainingSeconds: this.props.initialSeconds,
   };
   randomNumbers = Array
     .from({ length: this.props.randomNumberCount})
@@ -18,6 +20,25 @@ export default class Game extends Component<Props> {
       .slice(0, this.props.randomNumberCount - 2)
       .reduce((acc, curr) => acc + curr, 0);
       //TODO: Shuffle the random numbers
+    componentDidMount() {
+      //Erik - 5/1/2018 setInterval is async timer
+      //Erik - 5/1/2018 The second function takes is a '.then()' that takes a conditional
+      //Erik - 5/1/2018 The interval method returns its Id
+      this.intervalId = setInterval(() => {
+        this.setState((prevState) => ({
+          remainingSeconds: prevState.remainingSeconds - 1,
+        }), () => {
+          if (this.state.remainingSeconds === 0) {
+            clearInterval(this.intervalId);
+          }
+        });
+      }, 1000);
+    }
+
+    componentWillUnmount() {
+      clearInterval(this.intervalId);
+    }
+
     isNumberSelected = (numberIndex) => {
       //Erik - 5/1/2018 If number doesn't exist return -1, so false
       return this.state.selectedIds.indexOf(numberIndex) >= 0;
@@ -38,15 +59,17 @@ export default class Game extends Component<Props> {
       //Erik - 5/1/2018 Shows on device
       // console.warn('Current Sum: '+sumSelected);
       // console.log('Current Sum: '+sumSelected);
+      if(sumSelected > this.target
+        || this.state.remainingSeconds <= 0) {
+        return 'LOST';
+      }
       if(sumSelected < this.target) {
         return 'PLAYING';
       }
       if(sumSelected == this.target) {
         return 'WON';
       }
-      if(sumSelected > this.target) {
-        return 'LOST';
-      }
+    
     }
     
     render() {
@@ -69,6 +92,7 @@ export default class Game extends Component<Props> {
             )}
           </View>
           <Text>{gameStatus}</Text>
+          <Text>{this.state.remainingSeconds}</Text>
         </View>
       );
     }

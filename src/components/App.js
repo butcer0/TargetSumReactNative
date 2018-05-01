@@ -11,7 +11,7 @@ type Props = {};
 export default class App extends Component<Props> {
   render() {
     return (
-      <Game randomNumberCount={6}/>
+      <Game randomNumberCount={6} initialSeconds={10}/>
     );
   }
 }
