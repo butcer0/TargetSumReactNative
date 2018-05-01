@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
 import PropTypes from 'prop-types';
+import RandomNumber from './RandomNumber';
 
 type Props = {};
 export default class Game extends Component<Props> {
@@ -20,7 +21,7 @@ export default class Game extends Component<Props> {
           <Text style={styles.target}>{this.target}</Text>
           <View style={styles.randomContainer}>
             {this.randomNumbers.map((randomNumber, index) =>
-              <Text style={styles.random} key={index}>{randomNumber}</Text>
+              <RandomNumber key={index} number={randomNumber} />
             )}
           </View>
         </View>
@@ -45,13 +46,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
-  },
-  random: {
-    backgroundColor: '#999',
-    width: 100,
-    marginHorizontal: 15,
-    marginVertical: 25,
-    fontSize: 35,
-    textAlign: 'center'    
   },
 });
