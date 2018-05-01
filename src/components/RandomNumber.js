@@ -8,19 +8,25 @@ import PropTypes from 'prop-types';
 type Props = {};
 export default class RandomNumber extends Component<Props> {
     static propTypes = {
+      id: PropTypes.number.isRequired,
       number: PropTypes.number.isRequired,
-      isSelected: PropTypes.bool.isRequired,
+      isDisabled: PropTypes.bool.isRequired,
+      onPress: PropTypes.func.isRequired
     };
     handlePress = () => {
     //   console.log(this.props.number);
-
+      if(!this.props.isDisabled)
+      {
+        this.props.onPress(this.props.id);
+      }
+      
     };
 
     render() {
       return (
-      //Erik - 5/1/2018 this.props.isSelected -> only add styles.selected if isSelected is true (basically that the style exists and the prop is true)
+      //Erik - 5/1/2018 this.props.isDisabled -> only add styles.selected if isDisabled is true (basically that the style exists and the prop is true)
         <TouchableOpacity onPress={this.handlePress}>
-          <Text style={[styles.random, this.props.isSelected && styles.selected]}>
+          <Text style={[styles.random, this.props.isDisabled && styles.disabled]}>
             {this.props.number}
           </Text>
         </TouchableOpacity>
@@ -37,7 +43,7 @@ const styles = StyleSheet.create({
     fontSize: 35,
     textAlign: 'center',
   },
-  selected: {
+  disabled: {
     opacity: 0.3,
   },
 });

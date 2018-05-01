@@ -9,7 +9,7 @@ export default class Game extends Component<Props> {
     randomNumberCount: PropTypes.number.isRequired,
   };
   state = {
-    selectedNumbers: [0,4],
+    selectedIds: [],
   };
   randomNumbers = Array
     .from({ length: this.props.randomNumberCount})
@@ -20,19 +20,55 @@ export default class Game extends Component<Props> {
       //TODO: Shuffle the random numbers
     isNumberSelected = (numberIndex) => {
       //Erik - 5/1/2018 If number doesn't exist return -1, so false
-      return this.state.selectedNumbers.indexOf(numberIndex) >= 0;
+      return this.state.selectedIds.indexOf(numberIndex) >= 0;
     };
+    selectNumber = (numberIndex) => {
+      console.log('Pressed ' + numberIndex);
+      //Erik - 5/1/2018 The arrow function naturally returns the return value of the function
+      this.setState((prevState) => ({
+        //Erik - 5/1/2018 Copy previous selected numbers and add new index, this keeps state immuatable
+        selectedIds: [...prevState.selectedIds, numberIndex],
+      }));
+    };
+  // gameStatus: PLAYING, WON, LOST
+    gameStatus = () => {
+      const sumSelected = this.state.selectedIds.reduce((acc, curr) => {
+        return acc + this.randomNumbers[curr];
+      },0);
+      //Erik - 5/1/2018 Shows on device
+      // console.warn('Current Sum: '+sumSelected);
+      // console.log('Current Sum: '+sumSelected);
+      if(sumSelected < this.target) {
+        return 'PLAYING';
+      }
+      if(sumSelected == this.target) {
+        return 'WON';
+      }
+      if(sumSelected > this.target) {
+        return 'LOST';
+      }
+    }
+    
     render() {
+      const gameStatus = this.gameStatus();
       return (
+        //Erik - 5/1/2018 Use dynamic string to select the correct class
         <View style={styles.container}>
-          <Text style={styles.target}>{this.target}</Text>
+          <Text style={[styles.target, styles[`STATUS_${gameStatus}`]]}>
+            {this.target}
+          </Text>
           <View style={styles.randomContainer}>
             {this.randomNumbers.map((randomNumber, index) =>
-              <RandomNumber key={index} number={randomNumber} 
-                isSelected={this.isNumberSelected(index)}
+              <RandomNumber 
+                key={index}
+                id={index}
+                number={randomNumber}
+                isDisabled={this.isNumberSelected(index) || gameStatus !== 'PLAYING'}
+                onPress={this.selectNumber}
               />
             )}
           </View>
+          <Text>{gameStatus}</Text>
         </View>
       );
     }
@@ -46,7 +82,7 @@ const styles = StyleSheet.create({
   },
   target: {
     fontSize: 50,
-    backgroundColor: '#bbb',
+    
     margin: 50,
     textAlign: 'center',
   },
@@ -55,5 +91,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-around',
+  },
+  STATUS_PLAYING: {
+    backgroundColor: '#bbb',
+  },
+  STATUS_WON: {
+    backgroundColor: 'green',
+  },
+  STATUS_LOST: {
+    backgroundColor: 'red',
   },
 });
