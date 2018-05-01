@@ -10,6 +10,8 @@ export default class Game extends Component<Props> {
     randomNumberCount: PropTypes.number.isRequired,
     initialSeconds: PropTypes.number.isRequired,
     onPlayAgain: PropTypes.func.isRequired,
+    score: PropTypes.number.isRequired,
+    onGameComplete: PropTypes.func.isRequired,
   };
   state = {
     selectedIds: [],
@@ -68,6 +70,7 @@ export default class Game extends Component<Props> {
         if(this.gameStatus != 'PLAYING')
         {
           clearInterval(this.intervalId);
+          this.props.onGameComplete(this.gameStatus);
         }
       } 
     }
@@ -114,7 +117,7 @@ export default class Game extends Component<Props> {
   handlePlayAgainPressed = () => {
     if(this.gameStatus !== 'PLAYING')
     {
-      this.props.onPlayAgain();
+      this.props.onPlayAgain(this.gameStatus);
     }
   }; 
 
